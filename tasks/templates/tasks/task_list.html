@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head><link rel="stylesheet" href="{% static 'tasks/style.css' %}">
+    
+    <title>My Todo List</title>
+</head>
+
+<body>
+
+    <h1>My Todo List</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <input type="text" name="title" placeholder="Enter a task">
+
+        <button type="submit">Add Task</button>
+    </form>
+
+    <hr>
+
+    {% for task in tasks %}
+        <p>
+            {{ task.title }}
+
+    <form method="POST" action="{% url 'toggle_task' task.id %}" style="display: inline;">
+    {% csrf_token %}
+    <input
+        type="checkbox"
+        {% if task.completed %}checked{% endif %}
+        onchange="this.form.submit()"
+    >
+</form>
+
+{% if task.completed %}
+    Completed
+{% else %}
+    Not completed
+{% endif %}
+<a href="{% url 'edit_task' task.id %}">
+    <button>Edit</button>
+</a>
+<a href="{% url 'delete_task' task.id %}">
+    <button>Delete</button>
+
+</a>
+        </p>
+    {% empty %}
+        <p>No tasks yet.</p>
+    {% endfor %}
+
+</body>
+</html>
